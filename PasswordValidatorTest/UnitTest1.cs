@@ -62,16 +62,17 @@ namespace PasswordValidatorTest
             bool expected = Password.CheckDigit("ASD");       
         }
         
-        [TestMethod, ExpectedException(typeof(InvalidPasswdException))]
+        [TestMethod]
         public void GivingPasswordWithLessThanThreeConditions_ForExternal_VerifyIt_ThrowsException()
         {
-            bool expected = ConstructAndCall("WESDASXD", "External");
+            bool expected = ConstructAndCall("WES", "External");
+            Assert.AreEqual(false, expected, "Less than 3 condition");
         }
 
         [TestMethod]
         public void GivingPasswordWithGreaterThanThreeCondition_ForExternal_VerifyIt_ThrowsException()
         {
-            bool expected = ConstructAndCall("aaAdadaas", "External");
+            bool expected = ConstructAndCall("fASXFCFFGGV", "External");
             Assert.AreEqual(true, expected, "Correct password");
 
         }

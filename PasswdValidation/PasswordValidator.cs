@@ -7,13 +7,13 @@ namespace PasswordValidation
     {
         public bool Verify(string password, string UserType)
         {
-            if (UserType == "Internal")
+            if (UserType.Equals( "Internal"))
             {
                 InternalPasswordValidator obj = new InternalPasswordValidator();
                 bool result = obj.Verify(password);
                 return result;
             }
-            else if (UserType == "External")
+            else if (UserType.Equals("External"))
             {
                 ExternalPasswordValidator obj = new ExternalPasswordValidator();
                 bool result = obj.Verify(password);
@@ -41,19 +41,41 @@ namespace PasswordValidation
     }
     public class ExternalPasswordValidator:PasswordValidator
     {
-        int count=0;
+        int PassCount=0;
         public bool Verify(string password)
         {
-            if (!CheckNull(password) || !CheckUppercase(password))
+            bool res;
+            try
             {
+                res =(CheckNull(password) && CheckUppercase(password) && CheckLowercase(password) && CheckLength(password) && CheckDigit(password));
+            }
+            catch
+            {
+                if (PassCount >= 2)
+                {
+                    PassCount = PassCount - 2;
+                }
+                try
+                {
+                    res = (CheckUppercase(password) || CheckNull(password));
+                }
+                catch
+                {
+                    return false;
+                }
+                if (PassCount > 2)
+                {
+                    return true;
+                }
                 return false;
             }
-            else if (!CheckLowercase(password)&&!CheckLength(password) && !CheckDigit(password))
+            if (PassCount > 2)
             {
-                return false;
-            }
-            else
                 return true;
+            }
+           
+            
+            return false;
         }
         public bool CheckNull(string password)
         {
@@ -61,7 +83,7 @@ namespace PasswordValidation
                 throw new InvalidPasswdException("Password cannot be empty");
             else
             {
-                count++;
+                PassCount++;
                 return true;
             }
 
@@ -75,6 +97,7 @@ namespace PasswordValidation
             }
             else
             {
+                PassCount++;
                 return true;
             }
         }
@@ -86,7 +109,7 @@ namespace PasswordValidation
             }
             else
             {
-                count++;
+                PassCount++;
                 return true;
             }
         }
@@ -98,7 +121,7 @@ namespace PasswordValidation
             }
             else
             {
-                count++;
+                PassCount++;
                 return true;
             }
         }
@@ -110,7 +133,7 @@ namespace PasswordValidation
             }
             else
             {
-                count++;
+                PassCount++;
                 return true;
             }
         }
